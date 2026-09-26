@@ -1,0 +1,22 @@
+   name: Build Docker Image
+
+   on:
+     push:
+       branches: [ main ]
+
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v3
+         
+         - name: Build Docker image
+           run: |
+             docker build -t proxcenter-frontend:v1.4.10-oidc -f frontend/Dockerfile frontend
+             docker save proxcenter-frontend:v1.4.10-oidc | gzip > proxcenter.tar.gz
+         
+         - name: Upload artifact
+           uses: actions/upload-artifact@v3
+           with:
+             name: proxcenter-image
+             path: proxcenter.tar.gz
